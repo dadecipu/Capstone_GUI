@@ -4,7 +4,8 @@ public class Sprite {
     Image image;
     Coordinate position;
 
-    void setPosition(Coordinate p) {
+    public boolean trySetPosition(Coordinate p) {
+        // check if land coordinate
         position = p;
     }
 

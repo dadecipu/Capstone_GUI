@@ -7,9 +7,10 @@ import java.util.HashMap;
 
 public class Grid {
     public static final double TOP_LATITUDE = 36.137598;
-    public static final double LEFT_LONGITUDE = -91.140645;
-    public static final double BOTTOM_LATITUDE = 36.135402;
-    public static final double RIGHT_LONGITUDE = -91.140645;
+    public static final double LEFT_LONGITUDE = -94.140644;
+    public static final double BOTTOM_LATITUDE = 36.135397;
+    public static final double RIGHT_LONGITUDE = -94.137925;
+    public static final String BACKGROUND_PNG = "Background_800ftsq.PNG";
 
     // Water pixel determined in isPixelWater by green component of pixel RGB
     private static final int WATER_GREEN = 218;
@@ -24,7 +25,7 @@ public class Grid {
 
     Grid() throws IOException {
         try {
-            background = ImageIO.read(new File("Background_800ftsq.PNG"));
+            background = ImageIO.read(new File(BACKGROUND_PNG));
         } catch (IOException e) {
             throw e;
         }
@@ -40,7 +41,7 @@ public class Grid {
     }
 
     // calculates the coordinate of the mouse click based on the proportions of the x, y position
-    public static Coordinate calculateCoordinate(int mouseX, int mouseY, int windowWidth, int windowHeight) {
+    public Coordinate calculateCoordinate(int mouseX, int mouseY, int windowWidth, int windowHeight) {
         double gridHeight = coordinateGrid.get("NE").longitude - coordinateGrid.get("SE").longitude;
         double gridWidth = -coordinateGrid.get("NE").latitude - coordinateGrid.get("NW").latitude;
 

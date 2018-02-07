@@ -1,5 +1,5 @@
 import javax.swing.JFrame;
-import java.awt.Graphics;
+import java.awt.*;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -12,12 +12,14 @@ public class View extends JFrame implements ActionListener {
     Controller controller;
     Model model;
     Panel viewPanel;
-    BufferedImage background;
+
+    Image background;
 
     public View(Controller c, Model m) {
         this.controller = c;
         this.model = m;
-        this.background = Grid.background;
+        this.background = m.getGrid().getTerrainImage();
+
         this.viewPanel = new Panel();
         this.viewPanel.addMouseListener(controller);
         this.getContentPane().add(this.viewPanel);
@@ -40,8 +42,8 @@ public class View extends JFrame implements ActionListener {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            //g.drawImage(background, 0, 0, null);
-            drawSprites(g);
+            g.drawImage(background, 0, 0, null);
+            //drawSprites(g);
         }
 
         private void drawSprites(Graphics g) {

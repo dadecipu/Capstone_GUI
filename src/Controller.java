@@ -8,7 +8,7 @@ public class Controller implements MouseListener{
     private View view;
     private Boat boatSelected;
 
-    Controller() {
+    Controller() throws IOException {
         model = new Model(this);
     }
 

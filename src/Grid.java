@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.util.HashMap;
 
 public class Grid {
     public static final double TOP_LATITUDE = 36.137598;
@@ -13,23 +13,30 @@ public class Grid {
 
     // Water pixel determined in isPixelWater by green component of pixel RGB
     private static final int WATER_GREEN = 218;
-    private static final String BACKGROUND_PNG = "Background_800ftsq.png";
 
-    private static Map<String, Coordinate> coordinateGrid;
-    public static BufferedImage background;
+    private static HashMap<String, Coordinate> coordinateGrid;
+    private static BufferedImage background;
 
+    Coordinate NW;
+    Coordinate NE;
+    Coordinate SW;
+    Coordinate SE;
 
     Grid() throws IOException {
         try {
-            background = ImageIO.read(new File(BACKGROUND_PNG));
+            background = ImageIO.read(new File("Background_800ftsq.PNG"));
         } catch (IOException e) {
             throw e;
         }
-
-        coordinateGrid.put("NW", new Coordinate(TOP_LATITUDE, LEFT_LONGITUDE));
-        coordinateGrid.put("NE", new Coordinate(TOP_LATITUDE, RIGHT_LONGITUDE));
-        coordinateGrid.put("SW", new Coordinate(BOTTOM_LATITUDE, RIGHT_LONGITUDE));
-        coordinateGrid.put("SE", new Coordinate(BOTTOM_LATITUDE, LEFT_LONGITUDE));
+        coordinateGrid = new HashMap<String, Coordinate>();
+        NW = new Coordinate(TOP_LATITUDE, LEFT_LONGITUDE);
+        NE = new Coordinate(TOP_LATITUDE, RIGHT_LONGITUDE);
+        SW = new Coordinate(BOTTOM_LATITUDE, RIGHT_LONGITUDE);
+        SE = new Coordinate(BOTTOM_LATITUDE, LEFT_LONGITUDE);
+        coordinateGrid.put("NW", NW);
+        coordinateGrid.put("NE", NE);
+        coordinateGrid.put("SW", SW);
+        coordinateGrid.put("SE", SE);
     }
 
     // calculates the coordinate of the mouse click based on the proportions of the x, y position
@@ -50,8 +57,7 @@ public class Grid {
         return false;
     }
 
-    public Image getTerrainAsImage() {
-        Image background = Toolkit.getDefaultToolkit().createImage(BACKGROUND_PNG);
+    public BufferedImage getTerrainImage() {
         return background;
     }
 }

@@ -8,8 +8,8 @@ public class Obstacle extends Sprite {
         ROCK
     }
 
-    Obstacle(obstacle_types o, int x, int y) throws IOException {
-        super(x, y);
+    Obstacle(obstacle_types o, int x, int y, Coordinate c) throws IOException {
+        super(x, y, c);
         if (o == obstacle_types.ICEBERG) {
             this.image = ImageIO.read(new File("iceberg_obstacle.png"));
         }

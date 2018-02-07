@@ -1,21 +1,21 @@
 import java.awt.*;
-import java.io.IOException;
+import java.awt.image.BufferedImage;
 
 public class Sprite {
-    protected Image image;
+    protected BufferedImage image;
     protected Point XYPosition;
     protected Coordinate coordinatePosition;
 
     Sprite() {}
-    Sprite(int x, int y) {
-        this.XYPosition.x = x;
-        this.XYPosition.y = y;
+    Sprite(int x, int y, Coordinate c) {
+        XYPosition = new Point(x, y);
+        coordinatePosition = c;
     }
 
     // before calling this, check pixel color for water
-    public void setPosition(int x, int y) throws Exception {
+    public void setPosition(int x, int y, Coordinate c) throws Exception {
         XYPosition = new Point(x, y);
-        coordinatePosition = (Grid.calculateCoordinate(x, y, View.width, View.height));
+        coordinatePosition = c;
     }
 
     public Coordinate getCoordinatePosition() { return coordinatePosition; }

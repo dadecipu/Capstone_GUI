@@ -43,13 +43,13 @@ public class View extends JFrame implements ActionListener {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             g.drawImage(background, 0, 0, null);
-            //drawSprites(g);
+            drawSprites(g);
         }
 
         private void drawSprites(Graphics g) {
             Fleet fleet = model.getFleet();
             for (Boat b : fleet.Boats) {
-                //g.drawImage(b.image, b.getXpos(), b.getYpos(), null);
+                g.drawImage(b.image, b.getXpos(), b.getYpos(), null);
             }
 
         }

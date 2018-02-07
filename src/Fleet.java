@@ -8,12 +8,12 @@ public class Fleet {
         Boats = boats;
     }
 
-    public void moveFleet(Coordinate c) throws Exception {
+    public void moveFleet(int mouseX, int mouseY) throws Exception {
         // Is AI going to determine actual coordinates?
         // Not all boats can go to same coordinate
         for ( Boat b : Boats ) {
             try {
-                b.setPosition(c);
+                b.setPosition(mouseX, mouseY);
             } catch (Exception e) {
                 throw e;
             }

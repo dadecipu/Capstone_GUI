@@ -3,23 +3,29 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 
 public class View extends JFrame implements ActionListener {
+    public static final int width = 1592;
+    public static final int height = 1589;
+
     Controller controller;
     Model model;
     Panel viewPanel;
+    BufferedImage background;
 
     public View(Controller c, Model m) {
         this.controller = c;
         this.model = m;
-
+        this.background = Grid.background;
         this.viewPanel = new Panel();
         this.viewPanel.addMouseListener(controller);
         this.getContentPane().add(this.viewPanel);
 
+        this.setSize(height, width);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
+        this.setResizable(false);
     }
 
     public void actionPerformed(ActionEvent evt) {
@@ -27,7 +33,22 @@ public class View extends JFrame implements ActionListener {
     }
 
     private class Panel extends JPanel {
+        Panel () {
+
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            //g.drawImage(background, 0, 0, null);
+            drawSprites(g);
+        }
+
         private void drawSprites(Graphics g) {
+            Fleet fleet = model.getFleet();
+            for (Boat b : fleet.Boats) {
+                //g.drawImage(b.image, b.getXpos(), b.getYpos(), null);
+            }
 
         }
     }

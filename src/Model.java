@@ -1,7 +1,4 @@
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Model {
@@ -12,21 +9,24 @@ public class Model {
     private ArrayList<Obstacle> obstacles;
     private Grid mapOfLake;
 
-    public void broadcastCoordinate(Coordinate c) {
+    public void broadcastCoordinates(Coordinate c) {
         // TODO: figure out broadcasting
+    }
+
+    public Grid getGrid() {
+        return mapOfLake;
+    }
+
+    public Fleet getFleet() {
+        return fleet;
     }
 
     Model(Controller c) {
         controller = c;
     }
 
-    public void initialize() throws IOException {
-        BufferedImage background;
-        try {
-            background = ImageIO.read(new File("background.png"));
-        } catch (IOException e) {
-            throw e;
-        }
+    public void initialize()  {
+
     }
 
     void update() {

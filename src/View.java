@@ -6,13 +6,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 
 public class View extends JFrame implements ActionListener {
-    private Controller controller;
-    private Model model;
-    private Panel viewPanel;
+    Controller controller;
+    Model model;
+    Panel viewPanel;
 
     public View(Controller c, Model m) {
         this.controller = c;
         this.model = m;
+
+        this.viewPanel = new Panel();
+        this.viewPanel.addMouseListener(controller);
+        this.getContentPane().add(this.viewPanel);
+
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setVisible(true);
     }
 
     public void actionPerformed(ActionEvent evt) {

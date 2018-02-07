@@ -1,21 +1,27 @@
+import java.util.Map;
 
-public const class Grid {
-    private Map<Coordinate> coordinateGrid;
+public class Grid {
+    public static final double TOP_LATITUDE = 36.137598;
+    public static final double LEFT_LONGITUDE = -91.140645;
+    public static final double BOTTOM_LATITUDE = 36.135402;
+    public static final double RIGHT_LONGITUDE = -91.140645;
+
+    private static Map<String, Coordinate> coordinateGrid;
+
 
     Grid() {
-        coordinateGrid['NW'] = new Coordinate(36.137598, -91.140645);
-        coordinateGrid['NE'] = new Coordinate(36.137598, -94.137937);
-        coordinateGrid['SW'] = new Coordinate(36.135402, -94.137937);
-        coordinateGrid['SE'] = new Coordinate(36.135402, -91.140645);
+        coordinateGrid.put("NW", new Coordinate(TOP_LATITUDE, LEFT_LONGITUDE));
+        coordinateGrid.put("NE", new Coordinate(TOP_LATITUDE, RIGHT_LONGITUDE));
+        coordinateGrid.put("SW", new Coordinate(BOTTOM_LATITUDE, RIGHT_LONGITUDE));
+        coordinateGrid.put("SE", new Coordinate(BOTTOM_LATITUDE, LEFT_LONGITUDE));
     }
 
     public Coordinate calculateCoordinate(int mouseX, int mouseY, int windowWidth, int windowHeight) {
-        double lon, lat;
-        double gridHeight = coordinateGrid['NE'].longitude - coordinateGrid['SE'].longitude;
-        double gridWidth = -(coordinateGrid['NE'].latitude - coordinateGrid['NW'].latitude);
+        double gridHeight = coordinateGrid.get("NE").longitude - coordinateGrid.get("SE").longitude;
+        double gridWidth = -coordinateGrid.get("NE").latitude - coordinateGrid.get("NW").latitude;
 
-        lon = coordinateGrid['NE'].longitude + ((mouseY / windowHeight) * gridHeight);
-        lat = coordinateGrid['NE'].latitude - ((mouseX / windowWidth) * gridWidth);
-        return new Coordinate(lon, lat);
+        double lat = coordinateGrid.get("NW").latitude - ((mouseX / windowWidth) * gridWidth);
+        double lon = coordinateGrid.get("NE").longitude + ((mouseY / windowHeight) * gridHeight);
+        return new Coordinate(lat, lon);
     }
 }

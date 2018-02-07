@@ -5,9 +5,9 @@ enum Direction {
     WEST,
     NORTHEAST,
     EAST,
-    SouthWest,
-    South,
-    SouthEast;
+    SOUTHWEST,
+    SOUTH,
+    SOUTHEAST;
 }
 
 public class Boat extends Sprite {

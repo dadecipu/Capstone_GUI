@@ -4,12 +4,9 @@ public class Sprite {
     Image image;
     Coordinate position;
 
-    public boolean trySetPosition(Coordinate p) {
-        // check if land coordinate
+    public void setPosition(Coordinate p) throws Exception {
+        // check if land coordinate (check terrain color?)
+        // if not, throw exception
         position = p;
-    }
-
-    void update(Model m) {
-
     }
 }

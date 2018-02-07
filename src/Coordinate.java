@@ -1,7 +1,7 @@
 
 public class Coordinate {
-    const public double longitude;
-    const public double latitude;
+    public double longitude;
+    public double latitude;
 
     Coordinate(double lon, double lat) {
         longitude = lon;

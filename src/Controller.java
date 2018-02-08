@@ -47,7 +47,27 @@ public class Controller implements MouseListener{
 
         Boat tempBoatSelection = null;
 
-        if (boatSelected != null && tempBoatSelection == null) {
+        //Used to check if this is first time boat is selected
+        //To avoid the stutter when a boat is selected
+        boolean newSelection = false;
+
+        // check for boat in x, y click
+        for (Boat b: model.getFleet().Boats) {
+            int boatRightX = b.getXpos() + b.getBoatImage().getWidth();
+            int boatBottomY = b.getYpos() + b.getBoatImage().getHeight();
+
+            if ((x > b.getXpos() && x <= boatRightX) &&
+                (y > b.getYpos() && y <= boatBottomY)) {
+                setBoatSelected(b);
+                newSelection = true;
+                break;
+            }
+        }
+
+        if (boatSelected != null && tempBoatSelection != null) {
+            // deselect old boat selected, select new boat
+            setBoatSelected(tempBoatSelection);
+        }else if (boatSelected != null && tempBoatSelection == null && !newSelection) {
             // try to move selected boat to position (if water and no obstacle)
             try{
               if(model.getGrid().isPixelWater(x, y)){
@@ -63,27 +83,10 @@ public class Controller implements MouseListener{
             }
         }
 
-        // check for boat in x, y click
-        for (Boat b: model.getFleet().Boats) {
-            int boatRightX = b.getXpos() + b.getBoatImage().getWidth();
-            int boatBottomY = b.getYpos() + b.getBoatImage().getHeight();
-
-            if ((x > b.getXpos() && x <= boatRightX) &&
-                (y > b.getYpos() && y <= boatBottomY)) {
-                setBoatSelected(b);
-                break;
-            }
-        }
-
-
         if (boatSelected == null && tempBoatSelection == null) {
             // no boat, no action
         }
 
-        if (boatSelected != null && tempBoatSelection != null) {
-            // deselect old boat selected, select new boat
-            setBoatSelected(tempBoatSelection);
-        }
 
     }
 

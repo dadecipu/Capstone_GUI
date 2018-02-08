@@ -46,6 +46,23 @@ public class Controller implements MouseListener{
         // TODO: iteration 2: Add a select all button to the sidebar
 
         Boat tempBoatSelection = null;
+
+        if (boatSelected != null && tempBoatSelection == null) {
+            // try to move selected boat to position (if water and no obstacle)
+            try{
+              if(model.getGrid().isPixelWater(x, y)){
+                boatSelected.setPosition(x, y, mouseCoordinate);
+                //Output new locaiton of boat (Testing only)
+                System.out.println("New Boat Coordinate: " + mouseCoordinate.getLongitude() + " " + mouseCoordinate.getLatitude());
+              }else{
+                //Report invalid coordinates if pixel isn't water
+                System.out.println("Invalid coordinates for the boat's destination.");
+              }
+            }catch(Exception err){
+              System.out.println("The following error has been caught when changing boats coordinates: " + err);
+            }
+        }
+
         // check for boat in x, y click
         for (Boat b: model.getFleet().Boats) {
             int boatRightX = b.getXpos() + b.getBoatImage().getWidth();
@@ -61,10 +78,6 @@ public class Controller implements MouseListener{
 
         if (boatSelected == null && tempBoatSelection == null) {
             // no boat, no action
-        }
-
-        if (boatSelected != null && tempBoatSelection == null) {
-            // try to move selected boat to position (if water and no obstacle)
         }
 
         if (boatSelected != null && tempBoatSelection != null) {

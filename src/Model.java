@@ -29,6 +29,8 @@ public class Model {
         // maybe add a scroll to zoom in feature too
         ArrayList<Boat> boats = new ArrayList<>();
         boats.add(new Boat(100, 100, (mapOfLake.calculateCoordinate(100, 100, View.width, View.height))));
+        boats.add(new Boat(200, 200, (mapOfLake.calculateCoordinate(200, 200, View.width, View.height))));
+
         fleet = new Fleet(boats);
     }
 

@@ -42,11 +42,10 @@ public class Grid {
 
     // calculates the coordinate of the mouse click based on the proportions of the x, y position
     public Coordinate calculateCoordinate(int mouseX, int mouseY, int windowWidth, int windowHeight) {
-        double gridHeight = coordinateGrid.get("NE").longitude - coordinateGrid.get("SE").longitude;
-        double gridWidth = -coordinateGrid.get("NE").latitude - coordinateGrid.get("NW").latitude;
-
-        double lat = coordinateGrid.get("NW").latitude - ((mouseX / windowWidth) * gridWidth);
-        double lon = coordinateGrid.get("NE").longitude + ((mouseY / windowHeight) * gridHeight);
+        double gridHeight = TOP_LATITUDE - BOTTOM_LATITUDE;
+        double gridWidth = RIGHT_LONGITUDE - LEFT_LONGITUDE;
+        double lat = TOP_LATITUDE - (((double)mouseX / (double)windowWidth) * gridWidth);
+        double lon = LEFT_LONGITUDE + (((double)mouseY / (double)windowHeight) * gridHeight);
         return new Coordinate(lat, lon);
     }
 

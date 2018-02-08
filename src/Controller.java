@@ -31,13 +31,17 @@ public class Controller implements MouseListener{
         }
         boatSelected = b;
         b.setSelected();
-        System.out.println(b.getCoordinatePosition().latitude +" "+ b.getCoordinatePosition().longitude);
+
+        System.out.println("Selected Boat Coordinates: " + b.getCoordinatePosition().getLongitude() + " " + b.getCoordinatePosition().getLatitude());
     }
 
     public void mousePressed(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        System.out.println(x + " " + y);
+
+
+        Coordinate mouseCoordinate = model.getGrid().calculateCoordinate(x, y, view.getWidth(), view.getHeight());
+        System.out.println("Mouse Click Coordinate: " + mouseCoordinate.getLongitude() + " " + mouseCoordinate.getLatitude());
         // TODO: iteration 2: if we add a sidebar, check which side of gui clicked
         // TODO: iteration 2: Add a select all button to the sidebar
 
@@ -46,10 +50,6 @@ public class Controller implements MouseListener{
         for (Boat b: model.getFleet().Boats) {
             int boatRightX = b.getXpos() + b.getBoatImage().getWidth();
             int boatBottomY = b.getYpos() + b.getBoatImage().getHeight();
-
-            System.out.println("boat left corner = " + b.getXpos() + " " + b.getYpos());
-            System.out.println("boat sides = " + boatRightX + " " + boatBottomY);
-
 
             if ((x > b.getXpos() && x <= boatRightX) &&
                 (y > b.getYpos() && y <= boatBottomY)) {

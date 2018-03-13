@@ -44,6 +44,7 @@ public class View extends JFrame implements ActionListener {
             super.paintComponent(g);
             g.drawImage(background, 0, 0, null);
             drawSprites(g);
+            drawAlerts(g);
         }
 
         private void drawSprites(Graphics g) {
@@ -52,6 +53,11 @@ public class View extends JFrame implements ActionListener {
                 g.drawImage(b.image, b.getXpos(), b.getYpos(), null);
             }
 
+        }
+
+        private void drawAlerts(Graphics g) {
+          //TODO: Develop a wayto draw an idicator for alerts around a boat.
+          //This can be done with some sort of red curve on the side facing the direction of the alert.
         }
     }
 }

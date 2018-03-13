@@ -2,6 +2,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 
 
 public class Boat extends Sprite {
@@ -14,6 +15,8 @@ public class Boat extends Sprite {
     private BufferedImage unselectedBoat;
     private BufferedImage selectedBoat;
     private boolean isSelected;
+
+    private LinkedList<Alert> alerts = new LinkedList<Alert>();
 
     public static enum Direction {
         NORTH,
@@ -43,6 +46,18 @@ public class Boat extends Sprite {
     void deselect() {
         isSelected = false;
         this.image = unselectedBoat;
+    }
+
+    public void addAlert(Alert a){
+      alerts.add(a);
+    }
+
+    public LinkedList<Alert> getAlerts(){
+      return alerts;
+    }
+
+    public void removeAlert(Alert a){
+      alerts.remove(a);
     }
 
     public Direction getDirection() {

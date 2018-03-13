@@ -1,12 +1,24 @@
-import java.awt.Image;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Sprite {
-    Image image;
-    Coordinate position;
+    protected BufferedImage image;
+    protected Point XYPosition;
+    protected Coordinate coordinatePosition;
 
-    public void setPosition(Coordinate p) throws Exception {
-        // check if land coordinate (check terrain color?)
-        // if not, throw exception
-        position = p;
+    Sprite() {}
+    Sprite(int x, int y, Coordinate c) {
+        XYPosition = new Point(x, y);
+        coordinatePosition = c;
     }
+
+    // before calling this, check pixel color for water
+    public void setPosition(int x, int y, Coordinate c) throws Exception {
+        XYPosition = new Point(x, y);
+        coordinatePosition = c;
+    }
+
+    public Coordinate getCoordinatePosition() { return coordinatePosition; }
+    public int getXpos() { return XYPosition.x; }
+    public int getYpos() { return XYPosition.y; }
 }

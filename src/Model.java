@@ -1,6 +1,3 @@
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -12,21 +9,33 @@ public class Model {
     private ArrayList<Obstacle> obstacles;
     private Grid mapOfLake;
 
-    public void broadcastCoordinate(Coordinate c) {
+    public void broadcastCoordinates(Coordinate c) {
         // TODO: figure out broadcasting
     }
 
-    Model(Controller c) {
-        controller = c;
+    public Grid getGrid() {
+        return mapOfLake;
     }
 
-    public void initialize() throws IOException {
-        BufferedImage background;
-        try {
-            background = ImageIO.read(new File("background.png"));
-        } catch (IOException e) {
-            throw e;
-        }
+    public Fleet getFleet() {
+        return fleet;
+    }
+
+    Model(Controller c) throws IOException {
+        controller = c;
+        mapOfLake = new Grid();
+
+        // TODO: ITERATION 2: Add an 'add boat' function somewhere on gui
+        // maybe add a scroll to zoom in feature too
+        ArrayList<Boat> boats = new ArrayList<>();
+        boats.add(new Boat(100, 100, (mapOfLake.calculateCoordinate(100, 100, View.width, View.height))));
+        boats.add(new Boat(200, 200, (mapOfLake.calculateCoordinate(200, 200, View.width, View.height))));
+
+        fleet = new Fleet(boats);
+    }
+
+    public void initialize()  {
+
     }
 
     void update() {

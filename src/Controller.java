@@ -1,12 +1,68 @@
+
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import javax.swing.Timer;
 
+//XBEE
+//import com.digi.xbee.api.RemoteXBeeDevice;
+//import com.digi.xbee.api.XBeeDevice;
+//import com.digi.xbee.api.*;
+
 public class Controller implements MouseListener{
     private Model model;
     private View view;
     private Boat boatSelected;
+
+    //XBEE Variables
+    //int baudrate = 9600; //This is needed to instaniate a local XBee device (IDK what it is yet)
+    //String remoteAdress = "000000409D5EXXXX";//This is the adress of the remote XBee (IDK how we get it yet)
+
+    //Local "bridge" XBee, used to communicate with remote XBee
+    //XBeeDevice localXBee = new XBeeDevice("Local", baudrate);
+
+    //Remote XBee device that local connects to. (On a boat)
+    //RemoteXBeeDevice remoteXBee1  = new RemoteXBeeDevice(localXBee, new XBee64BitAddress(remoteAdress));
+
+    /*
+      Useful functions
+        To open XBee Connection: localXBee.open();      (Need to only open local devices not remote)
+        To close XBee Connection: localXBee.close();
+        To read data from remote XBee: remoteXbee1.readDeviceInfo();
+
+      Information functions (Information cached from last readDeviceInfo() call)
+        get64BitAdress();
+        get16BitAdress();
+        getNodeIdentifier();
+        getFirmwareVersion();
+        getHardwareVersion();
+
+      Send Information Synchronously (Waits for response from remote xbee, but blocks the transmission)
+        sendData(remoteXBee1, byte[])     Needs remote xbee and data to be sent
+
+      Send Information Asynchronously (Can send and recieve data continously, but cannot verify if info was recieved)
+        sendDataAsync(remoteXBee1, byte[])
+
+      Reading Data (Polling)
+        readData(int)     where int is amount of time to wait for data (blank uses default time value)
+
+      Reading Data (Callback - Performs action upon recieving data)
+        MyDataRecieveListener dataListener = new ....
+        addDataListener(dataListener)
+
+                  //Example of dataListener
+                  import com.digi.xbee.api.listeners.IDataReceiveListener;
+
+                  public class MyDataReceiveListener implements IDataReceiveListener {
+                  	@Override
+                  	public void dataReceived(XBeeMessage xbeeMessage) {
+                  		String address = xbeeMessage.getDevice().get64BitAddress().toString();
+                  		String dataString = xbeeMessage.getDataString();
+                  		System.out.println("Received data from " + address +
+                  				": " + dataString);
+                  	}
+                  }
+    */
 
     Controller() throws IOException {
         model = new Model(this);

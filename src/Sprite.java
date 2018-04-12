@@ -5,9 +5,11 @@ public class Sprite {
     protected BufferedImage image;
     protected Point XYPosition;
     protected Coordinate coordinatePosition;
+	private int id;
 
     Sprite() {}
-    Sprite(int x, int y, Coordinate c) {
+    Sprite(int id, int x, int y, Coordinate c) {
+    	this.id = id;
         XYPosition = new Point(x, y);
         coordinatePosition = c;
     }
@@ -21,4 +23,5 @@ public class Sprite {
     public Coordinate getCoordinatePosition() { return coordinatePosition; }
     public int getXpos() { return XYPosition.x; }
     public int getYpos() { return XYPosition.y; }
+	public int getId() { return id; }
 }

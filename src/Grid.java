@@ -10,7 +10,7 @@ public class Grid {
     public static final double LEFT_LONGITUDE = -94.140644;
     public static final double BOTTOM_LATITUDE = 36.135397;
     public static final double RIGHT_LONGITUDE = -94.137925;
-    public static final String BACKGROUND_PNG = "Background_800ftsq.PNG";
+    public static final String BACKGROUND_PNG = "images/Background_800ftsq.PNG";
 
     // Water pixel determined in isPixelWater by green component of pixel RGB
     private static final int WATER_GREEN = 218;

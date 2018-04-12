@@ -8,6 +8,59 @@ public class Controller implements MouseListener{
     private View view;
     private Boat boatSelected;
 
+<<<<<<< Updated upstream:src/Controller.java
+=======
+    //XBEE Variables
+    int baudrate = 9600; //This is needed to instantiate a local XBee device (IDK what it is yet)
+    String remoteAdress = "000000409D5EXXXX";//This is the address of the remote XBee (IDK how we get it yet)
+
+    //Local "bridge" XBee, used to communicate with remote XBee
+    XBeeDevice localXBee = new XBeeDevice("Local", baudrate);
+
+    //Remote XBee device that local connects to. (On a boat)
+    //RemoteXBeeDevice remoteXBee1  = new RemoteXBeeDevice(localXBee, new XBee64BitAddress(remoteAdress));
+
+    /*
+      Useful functions
+        To open XBee Connection: localXBee.open();      (Need to only open local devices not remote)
+        To close XBee Connection: localXBee.close();
+        To read data from remote XBee: remoteXbee1.readDeviceInfo();
+
+      Information functions (Information cached from last readDeviceInfo() call)
+        get64BitAdress();
+        get16BitAdress();
+        getNodeIdentifier();
+        getFirmwareVersion();
+        getHardwareVersion();
+
+      Send Information Synchronously (Waits for response from remote xbee, but blocks the transmission)
+        sendData(remoteXBee1, byte[])     Needs remote xbee and data to be sent
+
+      Send Information Asynchronously (Can send and recieve data continously, but cannot verify if info was recieved)
+        sendDataAsync(remoteXBee1, byte[])
+
+      Reading Data (Polling)
+        readData(int)     where int is amount of time to wait for data (blank uses default time value)
+
+      Reading Data (Callback - Performs action upon recieving data)
+        MyDataRecieveListener dataListener = new ....
+        addDataListener(dataListener)
+
+                  //Example of dataListener
+                  import com.digi.xbee.api.listeners.IDataReceiveListener;
+
+                  public class MyDataReceiveListener implements IDataReceiveListener {
+                  	@Override
+                  	public void dataReceived(XBeeMessage xbeeMessage) {
+                  		String address = xbeeMessage.getDevice().get64BitAddress().toString();
+                  		String dataString = xbeeMessage.getDataString();
+                  		System.out.println("Received data from " + address +
+                  				": " + dataString);
+                  	} 
+                  }
+    */
+
+>>>>>>> Stashed changes:src/com/digi/xbee/example/Controller.java
     Controller() throws IOException {
         model = new Model(this);
     }
@@ -29,8 +82,10 @@ public class Controller implements MouseListener{
         if (boatSelected != null) {
             boatSelected.deselect();
         }
+        
         boatSelected = b;
         b.setSelected();
+        
 
         System.out.println("Selected Boat Coordinates: " + b.getCoordinatePosition().getLongitude() + " " + b.getCoordinatePosition().getLatitude());
     }
@@ -38,7 +93,7 @@ public class Controller implements MouseListener{
     public void mousePressed(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-
+        System.out.println(x + ", " + y);
 
         Coordinate mouseCoordinate = model.getGrid().calculateCoordinate(x, y, view.getWidth(), view.getHeight());
         System.out.println("Mouse Click Coordinate: " + mouseCoordinate.getLongitude() + " " + mouseCoordinate.getLatitude());
@@ -58,6 +113,7 @@ public class Controller implements MouseListener{
 
             if ((x > b.getXpos() && x <= boatRightX) &&
                 (y > b.getYpos() && y <= boatBottomY)) {
+            	view.setSelectionText(b.getId(), b.getCoordinatePosition());
                 setBoatSelected(b);
                 newSelection = true;
                 break;
@@ -67,18 +123,19 @@ public class Controller implements MouseListener{
         if (boatSelected != null && tempBoatSelection != null) {
             // deselect old boat selected, select new boat
             setBoatSelected(tempBoatSelection);
-        }else if (boatSelected != null && tempBoatSelection == null && !newSelection) {
+        } else if (boatSelected != null && tempBoatSelection == null && !newSelection) {
             // try to move selected boat to position (if water and no obstacle)
-            try{
-              if(model.getGrid().isPixelWater(x, y)){
+            try {
+              if (model.getGrid().isPixelWater(x, y)) {
+                view.setSelectionText(boatSelected.getId(), mouseCoordinate);                  
                 boatSelected.setPosition(x, y, mouseCoordinate);
                 //Output new locaiton of boat (Testing only)
                 System.out.println("New Boat Coordinate: " + mouseCoordinate.getLongitude() + " " + mouseCoordinate.getLatitude());
-              }else{
+              } else {
                 //Report invalid coordinates if pixel isn't water
                 System.out.println("Invalid coordinates for the boat's destination.");
               }
-            }catch(Exception err){
+            } catch(Exception err) {
               System.out.println("The following error has been caught when changing boats coordinates: " + err);
             }
         }
@@ -86,8 +143,6 @@ public class Controller implements MouseListener{
         if (boatSelected == null && tempBoatSelection == null) {
             // no boat, no action
         }
-
-
     }
 
     public void mouseReleased(MouseEvent e) {    }

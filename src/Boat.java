@@ -5,8 +5,8 @@ import java.io.IOException;
 
 
 public class Boat extends Sprite {
-    private static final String BOAT_IMAGE_PNG = "pirateship.png";
-    private static final String SELECTED_BOAT_PNG = "pirateship_selected.png";
+    private static final String BOAT_IMAGE_PNG = "images/pirateship.png";
+    private static final String SELECTED_BOAT_PNG = "images/pirateship_selected.png";
     private Direction direction = Direction.NORTH;
     private int speed = 0;
     private int width;
@@ -26,8 +26,8 @@ public class Boat extends Sprite {
         SOUTHEAST;
     }
 
-    Boat(int x, int y, Coordinate c) throws IOException {
-        super(x, y, c);
+    Boat(int id, int x, int y, Coordinate c) throws IOException {
+        super(id, x, y, c);
         unselectedBoat = ImageIO.read(new File(BOAT_IMAGE_PNG));
         selectedBoat = ImageIO.read(new File(SELECTED_BOAT_PNG));
 
@@ -52,7 +52,7 @@ public class Boat extends Sprite {
     public void updateDirection(Direction d) {
         direction = d;
     }
-
+    
     public int getSpeed() {
         return speed;
     }

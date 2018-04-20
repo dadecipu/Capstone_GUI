@@ -49,6 +49,19 @@ public class Grid {
         double lon = LEFT_LONGITUDE + (((double)mouseY / (double)windowHeight) * gridHeight);
         return new Coordinate(lat, lon);
     }
+    
+    public static Point calculatePoint(Coordinate coord) {
+    		Point coordPoint = new Point();
+    		double gridHeight = TOP_LATITUDE - BOTTOM_LATITUDE;
+    		double gridWidth = RIGHT_LONGITUDE - LEFT_LONGITUDE;
+    		double x = (((-coord.getLatitude()) + TOP_LATITUDE) / gridWidth) * View.width;
+    		double y = ((coord.getLongitude() - LEFT_LONGITUDE) / gridHeight) * View.height;
+    		
+    		int pointX = (int)x;
+    		int pointY = (int)y;
+    		coordPoint.setLocation(pointX, pointY);
+    		return coordPoint;
+    }
 
     public boolean isPixelWater(int x, int y) {
         Color pixelColor = new Color(background.getRGB(x, y));

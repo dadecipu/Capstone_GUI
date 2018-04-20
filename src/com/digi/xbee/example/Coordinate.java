@@ -24,4 +24,12 @@ public class Coordinate {
     double getLatitude() {
         return latitude;
     }
+    
+    float getLongitudeAsFloat() {
+    		return (float)longitude;
+    }
+    
+    float getLatitudeAsFloat() {
+    		return (float)latitude;
+    }
 }

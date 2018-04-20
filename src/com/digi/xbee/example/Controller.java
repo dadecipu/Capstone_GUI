@@ -5,64 +5,19 @@ import java.io.IOException;
 import javax.swing.Timer;
 
 import com.digi.xbee.api.XBeeDevice;
+import com.digi.xbee.api.models.XBee64BitAddress;
 
 public class Controller implements MouseListener{
-    private Model model;
+    private static Model model;
     private View view;
     private Boat boatSelected;
-
-    //XBEE Variables
-    int baudrate = 9600; //This is needed to instantiate a local XBee device (IDK what it is yet)
-    String remoteAdress = "000000409D5EXXXX";//This is the address of the remote XBee (IDK how we get it yet)
-
-    //Local "bridge" XBee, used to communicate with remote XBee  
-    XBeeDevice localXBee = new XBeeDevice("Local", baudrate);
-
-    //Remote XBee device that local connects to. (On a boat)
-    //RemoteXBeeDevice remoteXBee1  = new RemoteXBeeDevice(localXBee, new XBee64BitAddress(remoteAdress));
-
-    /*
-      Useful functions
-        To open XBee Connection: localXBee.open();      (Need to only open local devices not remote)
-        To close XBee Connection: localXBee.close();
-        To read data from remote XBee: remoteXbee1.readDeviceInfo();
-
-      Information functions (Information cached from last readDeviceInfo() call)
-        get64BitAdress();
-        get16BitAdress();
-        getNodeIdentifier();
-        getFirmwareVersion();
-        getHardwareVersion();
-
-      Send Information Synchronously (Waits for response from remote xbee, but blocks the transmission)
-        sendData(remoteXBee1, byte[])     Needs remote xbee and data to be sent
-
-      Send Information Asynchronously (Can send and recieve data continously, but cannot verify if info was recieved)
-        sendDataAsync(remoteXBee1, byte[])
-
-      Reading Data (Polling)
-        readData(int)     where int is amount of time to wait for data (blank uses default time value)
-
-      Reading Data (Callback - Performs action upon recieving data)
-        MyDataRecieveListener dataListener = new ....
-        addDataListener(dataListener)
-
-                  //Example of dataListener
-                  import com.digi.xbee.api.listeners.IDataReceiveListener;
-
-                  public class MyDataReceiveListener implements IDataReceiveListener {
-                  	@Override
-                  	public void dataReceived(XBeeMessage xbeeMessage) {
-                  		String address = xbeeMessage.getDevice().get64BitAddress().toString();
-                  		String dataString = xbeeMessage.getDataString();
-                  		System.out.println("Received data from " + address +
-                  				": " + dataString);
-                  	} 
-                  }
-    */
+    private Broadcaster broadcaster;
+    private String port = "/dev/tty.usbserial-DN01J2MD";
+    private int baudRate = 9600;
 
     Controller() throws IOException {
         model = new Model(this);
+        broadcaster = new Broadcaster(port, baudRate);
     }
 
     static void run() throws IOException {
@@ -75,7 +30,17 @@ public class Controller implements MouseListener{
         model.update();
     }
 
-
+    //THIS METHOD NEEDS TO BE TESTED TO BE PROPERLY IMPLEMENT
+    static void messageUpdate(XBee64BitAddress address, String dataRecieved) throws Exception {
+    		//Parse dataRecieved to get latitude and longitude values
+    	
+    		double lat, lon;
+    		lat = 1.2;
+    		lon = 2.2;
+    		Coordinate newCoord = new Coordinate(lat, lon);
+    	
+    		model.getFleet().messageUpdate(address, newCoord);
+    }
 
     // click boat to select
     void setBoatSelected (Boat b) {
@@ -127,8 +92,11 @@ public class Controller implements MouseListener{
             // try to move selected boat to position (if water and no obstacle)
             try {
               if (model.getGrid().isPixelWater(x, y)) {
-                view.setSelectionText(boatSelected.getId(), mouseCoordinate);                  
-                boatSelected.setPosition(x, y, mouseCoordinate);
+                view.setSelectionText(boatSelected.getId(), mouseCoordinate);     
+                
+                broadcaster.broadcastCoords(mouseCoordinate, boatSelected);
+                //boatSelected.setPosition(x, y, mouseCoordinate);		//Uncomment to move the boat when something is clicked
+                
                 //Output new locaiton of boat (Testing only)
                 System.out.println("New Boat Coordinate: " + mouseCoordinate.getLongitude() + " " + mouseCoordinate.getLatitude());
               } else {

@@ -2,6 +2,8 @@ package com.digi.xbee.example;
 import java.rmi.server.ExportException;
 import java.util.ArrayList;
 
+import com.digi.xbee.api.models.XBee64BitAddress;
+
 public class Fleet {
     ArrayList<Boat> Boats;
 
@@ -20,5 +22,14 @@ public class Fleet {
                 throw e;
             }
         }
+    }
+    
+    public void messageUpdate(XBee64BitAddress address, Coordinate newCoordinate) throws Exception {
+		//Iterate through all boats, find correct boat by address, update coordinate with dataRecieved
+    		for(Boat b : this.Boats) {
+    			if(b.getAddress().equals(address)) {
+    				b.updateCoordinate(newCoordinate);
+    			}
+    		}
     }
 }

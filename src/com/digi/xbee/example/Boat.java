@@ -1,8 +1,11 @@
 package com.digi.xbee.example;
 import javax.imageio.ImageIO;
+
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import com.digi.xbee.api.models.XBee64BitAddress;
 
 
 public class Boat extends Sprite {
@@ -15,6 +18,8 @@ public class Boat extends Sprite {
     private BufferedImage unselectedBoat;
     private BufferedImage selectedBoat;
     private boolean isSelected;
+    private XBee64BitAddress remoteAddress;			//WILL BE USED TO SEND BROADCASTER COORECT REMOTEADDRESS TO BROADCAST TO
+    private boolean isStopped;
 
     public static enum Direction {
         NORTH,
@@ -32,8 +37,14 @@ public class Boat extends Sprite {
         unselectedBoat = ImageIO.read(new File(BOAT_IMAGE_PNG));
         selectedBoat = ImageIO.read(new File(SELECTED_BOAT_PNG));
 
+        isStopped = true;
         isSelected = false;
         this.image = unselectedBoat;
+    }
+    
+    void updateCoordinate(Coordinate newCoord) throws Exception {
+    		Point coordPoint = Grid.calculatePoint(newCoord);
+    		this.setPosition((int)coordPoint.getX(), (int)coordPoint.getY(), newCoord);
     }
 
     void setSelected() {
@@ -60,6 +71,22 @@ public class Boat extends Sprite {
 
     public void updateSpeed(int s) {
         speed = s;
+    }
+    
+    public XBee64BitAddress getAddress() {
+    		return remoteAddress;
+    }
+    
+    public void setAddress(String address) {
+    		remoteAddress = new XBee64BitAddress(address);
+    }
+    
+    public void swapState() {
+    		this.isStopped = !isStopped;
+    }
+    
+    public boolean getStoppedState() {
+    		return this.isStopped;
     }
 
     // TODO: check obstacle and other boats (land?) coordinates against boat coordinates

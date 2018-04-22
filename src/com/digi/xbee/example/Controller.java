@@ -18,6 +18,11 @@ public class Controller implements MouseListener{
     Controller() throws IOException {
         model = new Model(this);
         broadcaster = new Broadcaster(port, baudRate);
+        
+        //For now we will hardcode remote devices in here
+        String address1 = "0013A20040EB823D";
+        model.getFleet().addBoat(model.getFleet().getFleetSize(), 100, 100, model.getMapOfLake().calculateCoordinate(100, 100, View.width, View.height), address1);
+        broadcaster.createNewRemoteDevice(address1);
     }
 
     static void run() throws IOException {
@@ -61,7 +66,7 @@ public class Controller implements MouseListener{
         System.out.println(x + ", " + y);
 
         Coordinate mouseCoordinate = model.getGrid().calculateCoordinate(x, y, view.getWidth(), view.getHeight());
-        System.out.println("Mouse Click Coordinate: " + mouseCoordinate.getLongitude() + " " + mouseCoordinate.getLatitude());
+        System.out.println("Mouse Click Coordinate: Lat: " + mouseCoordinate.getLatitude() + " Long: " + mouseCoordinate.getLongitude());
         // TODO: iteration 2: if we add a sidebar, check which side of gui clicked
         // TODO: iteration 2: Add a select all button to the sidebar
 
@@ -98,7 +103,7 @@ public class Controller implements MouseListener{
                 //boatSelected.setPosition(x, y, mouseCoordinate);		//Uncomment to move the boat when something is clicked
                 
                 //Output new locaiton of boat (Testing only)
-                System.out.println("New Boat Coordinate: " + mouseCoordinate.getLongitude() + " " + mouseCoordinate.getLatitude());
+                System.out.println("New Boat Coordinate: Lat: " + mouseCoordinate.getLatitude() + " Long: " + mouseCoordinate.getLongitude());
               } else {
                 //Report invalid coordinates if pixel isn't water
                 System.out.println("Invalid coordinates for the boat's destination.");

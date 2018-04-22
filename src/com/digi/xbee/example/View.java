@@ -80,8 +80,8 @@ public class View extends JFrame implements ActionListener {
     }
     
     public void setSelectionText(int boatId, Coordinate boatCoords) {
-    	selectionBoatText = boatId != 0 ? "Boat " + Integer.toString(boatId) : "Fleet";
-    	selectionCoordinateText = boatId != 0 ? String.format("%.3fN, %.3fE", boatCoords.getLongitude(), boatCoords.getLatitude()): "";
+    		selectionBoatText = boatId != 0 ? "Boat " + Integer.toString(boatId) : "Fleet";
+    		selectionCoordinateText = boatId != 0 ? String.format("%.3fN, %.3fE", boatCoords.getLatitude(), boatCoords.getLongitude()): "";
     }
 
     private class Panel extends JPanel {

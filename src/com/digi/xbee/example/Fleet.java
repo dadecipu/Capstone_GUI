@@ -1,4 +1,5 @@
 package com.digi.xbee.example;
+import java.io.IOException;
 import java.rmi.server.ExportException;
 import java.util.ArrayList;
 
@@ -22,6 +23,16 @@ public class Fleet {
                 throw e;
             }
         }
+    }
+    
+    public void addBoat(int id, int x, int y, Coordinate coord, String remoteAddress) throws IOException {
+		Boat b = new Boat(id, x, y, coord);
+		b.setAddress(remoteAddress);
+		this.Boats.add(b);
+    }
+    
+    public int getFleetSize() {
+    		return Boats.size();
     }
     
     public void messageUpdate(XBee64BitAddress address, Coordinate newCoordinate) throws Exception {

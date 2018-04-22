@@ -1,6 +1,8 @@
 package com.digi.xbee.example;
 import java.io.IOException;
 import java.util.ArrayList;
+import com.digi.xbee.api.models.XBee64BitAddress;
+
 
 public class Model {
     private static final int FLEET_BOAT_COUNT = 1;
@@ -30,11 +32,16 @@ public class Model {
         // TODO: ITERATION 2: Add an 'add boat' function somewhere on gui
         // maybe add a scroll to zoom in feature too
         boats = new ArrayList<>();
-        boats.add(new Boat(1, 100, 100, (mapOfLake.calculateCoordinate(100, 100, View.width, View.height))));
-        boats.add(new Boat(2, 200, 200, (mapOfLake.calculateCoordinate(200, 200, View.width, View.height))));
+        //boats.add(new Boat(1, 100, 100, (mapOfLake.calculateCoordinate(100, 100, View.width, View.height))));
+        //boats.add(new Boat(2, 200, 200, (mapOfLake.calculateCoordinate(200, 200, View.width, View.height))));
 
         fleet = new Fleet(boats); 
     }
+    
+    public Grid getMapOfLake() {
+    		return mapOfLake;
+    }
+
 
     public void initialize()  {
 

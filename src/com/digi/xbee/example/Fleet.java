@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import com.digi.xbee.api.models.XBee64BitAddress;
 
 public class Fleet {
-    ArrayList<Boat> Boats;
-
+    private ArrayList<Boat> Boats;
+    private boolean isSelected = false;
+    
     Fleet(ArrayList<Boat> boats) {
         Boats = boats;
     }
@@ -25,10 +26,54 @@ public class Fleet {
         }
     }
     
+    public ArrayList<Boat> getBoats() {
+    	return Boats;
+    }
+    
+    public boolean isFleetSelected() {
+    	return isSelected;
+    }
+    
     public void addBoat(int id, int x, int y, Coordinate coord, String remoteAddress) throws IOException {
 		Boat b = new Boat(id, x, y, coord);
 		b.setAddress(remoteAddress);
 		this.Boats.add(b);
+    }
+
+    public void selectFleet() {
+    	for (Boat b: Boats) {
+    		b.select();
+    	}
+    	isSelected = true;
+    }
+    
+    public void deselectFleet() {
+    	for (Boat b: Boats) {
+    		b.deselect();
+    	}
+    	isSelected = false;
+    }
+    
+    public void swapAllStates() {
+    	for (Boat b: Boats) {
+    		b.swapState();
+    	}
+    }
+    
+    public void sendAllHome() {
+    	for (Boat b: Boats) {
+    		b.sendHome();
+    	}
+    }
+    
+    public void setFleetPosition(int x, int y) {
+    	for (Boat b: Boats) {
+    		try {
+				b.setPositionFromXY(x, y);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+    	}
     }
     
     public int getFleetSize() {

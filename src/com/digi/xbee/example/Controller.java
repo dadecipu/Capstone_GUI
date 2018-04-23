@@ -6,6 +6,7 @@ import javax.swing.Timer;
 
 import com.digi.xbee.api.XBeeDevice;
 import com.digi.xbee.api.models.XBee64BitAddress;
+import com.digi.xbee.example.Button.buttonNames;
 
 public class Controller implements MouseListener{
     private static Model model;
@@ -21,13 +22,14 @@ public class Controller implements MouseListener{
         
         //For now we will hardcode remote devices in here
         String address1 = "0013A20040EB823D";
-        model.getFleet().addBoat(model.getFleet().getFleetSize(), 100, 100, model.getMapOfLake().calculateCoordinate(100, 100, View.width, View.height), address1);
+        model.getFleet().addBoat(1, 100, 100, model.getMapOfLake().calculateCoordinate(100, 100, View.width, View.height), address1);
+        model.getFleet().addBoat(2, 200, 100, model.getMapOfLake().calculateCoordinate(100, 100, View.width, View.height), address1);
         broadcaster.createNewRemoteDevice(address1);
     }
 
     static void run() throws IOException {
         Controller c = new Controller();
-        c.view = new View(c, c.model);
+        c.view = new View(c, model);
         new Timer(20, c.view).start();
     }
 
@@ -37,14 +39,14 @@ public class Controller implements MouseListener{
 
     //THIS METHOD NEEDS TO BE TESTED TO BE PROPERLY IMPLEMENT
     static void messageUpdate(XBee64BitAddress address, String dataRecieved) throws Exception {
-    		//Parse dataRecieved to get latitude and longitude values
-    	
-    		double lat, lon;
-    		lat = 1.2;
-    		lon = 2.2;
-    		Coordinate newCoord = new Coordinate(lat, lon);
-    	
-    		model.getFleet().messageUpdate(address, newCoord);
+		//Parse dataRecieved to get latitude and longitude values
+	
+		double lat, lon;
+		lat = 1.2;
+		lon = 2.2;
+		Coordinate newCoord = new Coordinate(lat, lon);
+	
+		model.getFleet().messageUpdate(address, newCoord);
     }
 
     // click boat to select
@@ -54,7 +56,7 @@ public class Controller implements MouseListener{
         }
         
         boatSelected = b;
-        b.setSelected();
+        b.select();
         
 
         System.out.println("Selected Boat Coordinates: " + b.getCoordinatePosition().getLongitude() + " " + b.getCoordinatePosition().getLatitude());
@@ -63,26 +65,34 @@ public class Controller implements MouseListener{
     public void mousePressed(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        System.out.println(x + ", " + y);
-
+        
+        if (!model.getGrid().isPixelWater(x, y)) {
+        	System.out.println("Mouse click outside of valid boat range");
+            for (Button b: view.buttons) {
+            	if ((x > b.getUpperLeftPoint().x && x < b.getLowerRightPoint().x)
+            		&& (y > b.getUpperLeftPoint().y && y < b.getLowerRightPoint().y)) {
+            		System.out.println("Clicking the " + b.getName() + " button");
+            		b.click();
+            	}
+            }     
+            return;
+        } 
+        
         Coordinate mouseCoordinate = model.getGrid().calculateCoordinate(x, y, view.getWidth(), view.getHeight());
         System.out.println("Mouse Click Coordinate: Lat: " + mouseCoordinate.getLatitude() + " Long: " + mouseCoordinate.getLongitude());
-        // TODO: iteration 2: if we add a sidebar, check which side of gui clicked
-        // TODO: iteration 2: Add a select all button to the sidebar
 
         Boat tempBoatSelection = null;
-
         //Used to check if this is first time boat is selected
         //To avoid the stutter when a boat is selected
         boolean newSelection = false;
 
         // check for boat in x, y click
-        for (Boat b: model.getFleet().Boats) {
+        for (Boat b: model.getFleet().getBoats()) {
             int boatRightX = b.getXpos() + b.getBoatImage().getWidth();
             int boatBottomY = b.getYpos() + b.getBoatImage().getHeight();
 
-            if ((x > b.getXpos() && x <= boatRightX) &&
-                (y > b.getYpos() && y <= boatBottomY)) {
+            if ((x > b.getXpos() && x <= boatRightX) 
+            	&& (y > b.getYpos() && y <= boatBottomY)) {
             	view.setSelectionText(b.getId(), b.getCoordinatePosition());
                 setBoatSelected(b);
                 newSelection = true;
@@ -90,36 +100,74 @@ public class Controller implements MouseListener{
             }
         }
 
-        if (boatSelected != null && tempBoatSelection != null) {
-            // deselect old boat selected, select new boat
-            setBoatSelected(tempBoatSelection);
-        } else if (boatSelected != null && tempBoatSelection == null && !newSelection) {
-            // try to move selected boat to position (if water and no obstacle)
-            try {
-              if (model.getGrid().isPixelWater(x, y)) {
-                view.setSelectionText(boatSelected.getId(), mouseCoordinate);     
-                
-                broadcaster.broadcastCoords(mouseCoordinate, boatSelected);
-                //boatSelected.setPosition(x, y, mouseCoordinate);		//Uncomment to move the boat when something is clicked
-                
-                //Output new locaiton of boat (Testing only)
-                System.out.println("New Boat Coordinate: Lat: " + mouseCoordinate.getLatitude() + " Long: " + mouseCoordinate.getLongitude());
-              } else {
-                //Report invalid coordinates if pixel isn't water
-                System.out.println("Invalid coordinates for the boat's destination.");
-              }
-            } catch(Exception err) {
-              System.out.println("The following error has been caught when changing boats coordinates: " + err);
-            }
-        }
-
-        if (boatSelected == null && tempBoatSelection == null) {
-            // no boat, no action
+        if (model.getFleet().isFleetSelected()) {  
+        	view.setSelectionText(0, mouseCoordinate);
+        	model.getFleet().setFleetPosition(x, y);
+        } else {
+	        if (boatSelected != null && tempBoatSelection == null && !newSelection) {
+	            try {
+	                view.setSelectionText(boatSelected.getId(), mouseCoordinate);     
+	                
+	                //broadcaster.broadcastCoords(mouseCoordinate, boatSelected);
+	                boatSelected.setPosition(x, y, mouseCoordinate);		//Uncomment to move the boat when something is clicked
+	                
+	                //Output new locaiton of boat (Testing only)
+	                System.out.println("New Boat Coordinate: Lat: " + mouseCoordinate.getLatitude() + " Long: " + mouseCoordinate.getLongitude());
+	            } catch(Exception err) {
+	              System.out.println("The following error has been caught when changing boats coordinates: " + err);
+	            }
+	        }
         }
     }
 
-    public void mouseReleased(MouseEvent e) {    }
+    public void mouseReleased(MouseEvent e) { 
+        int x = e.getX();
+        int y = e.getY();
+        if (!model.getGrid().isPixelWater(x, y)) {
+	        for (Button b: view.buttons) {
+	        	if ((x > b.getUpperLeftPoint().x && x < b.getLowerRightPoint().x)
+	        		&& (y > b.getUpperLeftPoint().y && y < b.getLowerRightPoint().y)) {
+	        		b.click();
+	        		clickButton(b);
+	        	}
+	        }
+        }
+    }
     public void mouseEntered(MouseEvent e) {    }
     public void mouseExited(MouseEvent e) {    }
     public void mouseClicked(MouseEvent e) {    }
+    
+    private void clickButton(Button b) { 	
+    	switch (b.getName()) {
+    	case Select_Fleet: 		
+    		if (!b.isFlipped()) {
+            	view.setSelectionText(0, null);
+    			model.getFleet().selectFleet();
+    		} else {
+            	view.setSelectionText(-1, null);
+    			model.getFleet().deselectFleet();
+    		}
+    		b.flip();
+    		break;
+    	case Move:
+    		// Add logic to determine input of fields
+    		break;
+    	case Stop: 
+    		if (model.getFleet().isFleetSelected()) {
+    			model.getFleet().swapAllStates();
+    		} else if (boatSelected != null) {  			
+    			boatSelected.swapState();
+    		}
+    		b.flip();
+    		break;
+    	case Send_Home: 
+    		if (model.getFleet().isFleetSelected()) {
+            	view.setSelectionText(-1, null);
+    			model.getFleet().sendAllHome();
+    		} else if (boatSelected != null) {
+    			boatSelected.sendHome();
+    		}
+    		break;  		
+    	}
+    }
 }

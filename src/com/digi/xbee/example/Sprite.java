@@ -20,6 +20,16 @@ public class Sprite {
         XYPosition = new Point(x, y);
         coordinatePosition = c;
     }
+    
+    public void setPositionFromCoordinates(Coordinate c) throws Exception {
+        XYPosition = Grid.calculatePoint(c);
+        coordinatePosition = c;
+    }
+    
+    public void setPositionFromXY(int x, int y) throws Exception {
+    	XYPosition = new Point(x, y);
+        coordinatePosition = Grid.calculateCoordinate(x, y, View.width, View.height);
+    }
 
     public Coordinate getCoordinatePosition() { return coordinatePosition; }
     public int getXpos() { return XYPosition.x; }

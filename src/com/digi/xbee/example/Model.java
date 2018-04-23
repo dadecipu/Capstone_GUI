@@ -29,9 +29,8 @@ public class Model {
         controller = c;
         mapOfLake = new Grid();
 
-        // TODO: ITERATION 2: Add an 'add boat' function somewhere on gui
-        // maybe add a scroll to zoom in feature too
         boats = new ArrayList<>();
+
         //boats.add(new Boat(1, 100, 100, (mapOfLake.calculateCoordinate(100, 100, View.width, View.height))));
         //boats.add(new Boat(2, 200, 200, (mapOfLake.calculateCoordinate(200, 200, View.width, View.height))));
 
@@ -39,7 +38,7 @@ public class Model {
     }
     
     public Grid getMapOfLake() {
-    		return mapOfLake;
+    	return mapOfLake;
     }
 
 

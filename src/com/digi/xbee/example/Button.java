@@ -1,37 +1,47 @@
 package com.digi.xbee.example;
 
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
 public class Button {
-	Image buttonImage;
-    Image clickedButtonImage;
+    public static enum buttonNames {
+    	Select_Fleet,
+    	Move,
+    	Stop,
+    	Send_Home
+    }
     
-    Image flippedButtonImage = null;
-    Image clickedFlippedButtonImage = null;
+	private buttonNames buttonName;
+	private BufferedImage buttonImage;
+	private BufferedImage clickedButtonImage;
     
-    public int x, y;
+	private BufferedImage flippedButtonImage = null;
+	private BufferedImage clickedFlippedButtonImage = null;
+
     private int width, height;
+    private Point upperLeft, lowerRight;
     
-    boolean clicked = false;
+    private boolean clicked = false;
+    private boolean flipped = false;
     
-    Button(String regularFile, String clickedFile, int x, int y) throws IOException {
+    Button(buttonNames name, String regularFile, String clickedFile, int x, int y) throws IOException {	
+    	buttonName = name;
         try {
         	buttonImage = ImageIO.read(new File(regularFile));
         	clickedButtonImage = ImageIO.read(new File(clickedFile));
         } catch (IOException e) {
             throw e;
-        }
-    	this.x = x;
-    	this.y = y; 
-    	
-    	width = buttonImage.getWidth(null);
-    	height = buttonImage.getHeight(null);
+        }       
+        setDimensions(buttonImage.getWidth(null), buttonImage.getHeight(null));
+    	setPosition(x, y);
     }
-    Button(String regularFile, String clickedFile, String flippedFile, String clickedFlippedFile, int x, int y) throws IOException {
+    Button(buttonNames name, String regularFile, String clickedFile, String flippedFile, String clickedFlippedFile, int x, int y) throws IOException {
+    	buttonName = name;    	 
         try {
         	buttonImage = ImageIO.read(new File(regularFile));
         	clickedButtonImage = ImageIO.read(new File(clickedFile));
@@ -40,16 +50,40 @@ public class Button {
         	clickedFlippedButtonImage = ImageIO.read(new File(clickedFlippedFile));
         } catch (IOException e) {
             throw e;
-        }
-    	this.x = x;
-    	this.y = y; 
-    	
-    	width = buttonImage.getWidth(null);
-    	height = buttonImage.getHeight(null);
+        }    
+        setDimensions(buttonImage.getWidth(null), buttonImage.getHeight(null));
+        setPosition(x, y);
     }
     
-    public Image getImage() {
-    	return clicked ? clickedButtonImage : buttonImage;
+    private void setDimensions(int w, int h) {
+    	width = w;
+    	height = h;
+    }
+    
+    private void setPosition(int x, int y) {
+    	upperLeft = new Point(x, y);
+    	lowerRight = new Point(x + width, y + height);
+    }
+    
+    public void click() {
+    	clicked = !clicked;
+    }
+    
+    public void flip() {
+    	flipped = !flipped;
+    }
+    
+    public BufferedImage getImage() {
+    	if (flipped && flippedButtonImage != null) return clicked ? clickedFlippedButtonImage : flippedButtonImage;
+    	else return clicked ? clickedButtonImage : buttonImage;
+    }
+    
+    public boolean isFlipped() {
+    	return flipped;
+    }
+    
+    public buttonNames getName() {
+    	return buttonName;
     }
     
     public int getWidth() {
@@ -59,10 +93,10 @@ public class Button {
     	return height;
     }
     
-    public int getX() {
-    	return x;
+    public Point getUpperLeftPoint() {
+    	return upperLeft;
     }
-    public int getY() {
-    	return y;
+    public Point getLowerRightPoint() {
+    	return lowerRight;
     }
 }

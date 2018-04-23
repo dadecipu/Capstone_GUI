@@ -19,6 +19,8 @@ public class Grid {
     private static HashMap<String, Coordinate> coordinateGrid;
     private static BufferedImage background;
 
+    public static double gridHeight, gridWidth;
+    
     Coordinate NW;
     Coordinate NE;
     Coordinate SW;
@@ -39,12 +41,12 @@ public class Grid {
         coordinateGrid.put("NE", NE);
         coordinateGrid.put("SW", SW);
         coordinateGrid.put("SE", SE);
+        gridHeight = TOP_LATITUDE - BOTTOM_LATITUDE;
+        gridWidth = RIGHT_LONGITUDE - LEFT_LONGITUDE;
     }
 
     // calculates the coordinate of the mouse click based on the proportions of the x, y position
-    public Coordinate calculateCoordinate(int mouseX, int mouseY, int windowWidth, int windowHeight) {
-        double gridHeight = TOP_LATITUDE - BOTTOM_LATITUDE;
-        double gridWidth = RIGHT_LONGITUDE - LEFT_LONGITUDE;
+    public static Coordinate calculateCoordinate(int mouseX, int mouseY, int windowWidth, int windowHeight) {
         double lat = TOP_LATITUDE - (((double)mouseX / (double)windowWidth) * gridWidth);
         double lon = LEFT_LONGITUDE + (((double)mouseY / (double)windowHeight) * gridHeight);
         return new Coordinate(lat, lon);
@@ -52,14 +54,18 @@ public class Grid {
     
     public static Point calculatePoint(Coordinate coord) {
     		Point coordPoint = new Point();
-    		double gridHeight = TOP_LATITUDE - BOTTOM_LATITUDE;
-    		double gridWidth = RIGHT_LONGITUDE - LEFT_LONGITUDE;
-    		double x = (((-coord.getLatitude()) + TOP_LATITUDE) / gridWidth) * View.width;
-    		double y = ((coord.getLongitude() - LEFT_LONGITUDE) / gridHeight) * View.height;
+    		
+    		System.out.println((((-coord.getLatitude()) + TOP_LATITUDE) / gridWidth) + " " + View.width);
+    		double x = (((-coord.getLatitude()) + TOP_LATITUDE) / gridWidth) / View.width;
+    		
+    		System.out.println((((coord.getLongitude()) - LEFT_LONGITUDE) / gridHeight) + " " + View.height);
+    		double y = ((coord.getLongitude() - LEFT_LONGITUDE) / gridHeight) / View.height;
     		
     		int pointX = (int)x;
     		int pointY = (int)y;
     		coordPoint.setLocation(pointX, pointY);
+    		
+    		System.out.println(pointX + " " + pointY);
     		return coordPoint;
     }
 

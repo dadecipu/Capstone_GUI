@@ -9,7 +9,12 @@ public class Coordinate {
         latitude = lat;
     }
 
-    void setLongitude(double l) {
+    public Coordinate(Coordinate c) {
+		longitude = c.longitude;
+		latitude = c.latitude;
+	}
+
+	void setLongitude(double l) {
         longitude = l;
     }
 

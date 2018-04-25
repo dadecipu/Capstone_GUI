@@ -8,6 +8,8 @@ import com.digi.xbee.api.XBeeDevice;
 import com.digi.xbee.api.models.XBee64BitAddress;
 import com.digi.xbee.example.Button.buttonNames;
 
+import android.graphics.Point;
+
 public class Controller implements MouseListener{
     private static Model model;
     private View view;
@@ -22,8 +24,8 @@ public class Controller implements MouseListener{
         
         //For now we will hardcode remote devices in here
         String address1 = "0013A20040EB823D";
-        model.getFleet().addBoat(1, 100, 100, model.getMapOfLake().calculateCoordinate(100, 100, View.width, View.height), address1);
-        model.getFleet().addBoat(2, 200, 100, model.getMapOfLake().calculateCoordinate(100, 100, View.width, View.height), address1);
+        model.getFleet().addBoat(1, 100, 100, model.getMapOfLake().calculateCoordinate(100, 100), address1);
+        model.getFleet().addBoat(2, 200, 100, model.getMapOfLake().calculateCoordinate(100, 100), address1);
         broadcaster.createNewRemoteDevice(address1);
     }
 
@@ -56,8 +58,7 @@ public class Controller implements MouseListener{
         }
         
         boatSelected = b;
-        b.select();
-        
+        b.select();       
 
         System.out.println("Selected Boat Coordinates: " + b.getCoordinatePosition().getLongitude() + " " + b.getCoordinatePosition().getLatitude());
     }
@@ -65,9 +66,8 @@ public class Controller implements MouseListener{
     public void mousePressed(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        
+        System.out.println(x + " " + y);
         if (!model.getGrid().isPixelWater(x, y)) {
-        	System.out.println("Mouse click outside of valid boat range");
             for (Button b: view.buttons) {
             	if ((x > b.getUpperLeftPoint().x && x < b.getLowerRightPoint().x)
             		&& (y > b.getUpperLeftPoint().y && y < b.getLowerRightPoint().y)) {
@@ -78,9 +78,12 @@ public class Controller implements MouseListener{
             return;
         } 
         
-        Coordinate mouseCoordinate = model.getGrid().calculateCoordinate(x, y, view.getWidth(), view.getHeight());
+		Coordinate mouseCoordinate = Grid.calculateCoordinate(x, y);
         System.out.println("Mouse Click Coordinate: Lat: " + mouseCoordinate.getLatitude() + " Long: " + mouseCoordinate.getLongitude());
 
+        java.awt.Point calculatedPoint = Grid.calculatePoint(mouseCoordinate);
+        System.out.println(calculatedPoint.x + " " + calculatedPoint.y); 
+        
         Boat tempBoatSelection = null;
         //Used to check if this is first time boat is selected
         //To avoid the stutter when a boat is selected
@@ -150,7 +153,23 @@ public class Controller implements MouseListener{
     		b.flip();
     		break;
     	case Move:
-    		// Add logic to determine input of fields
+    		Coordinate moveTo = view.getInputCoords();
+    		if (moveTo != null) {
+	    		System.out.println(moveTo.getLatitude() + " " + moveTo.getLongitude());
+	    		if (model.getFleet().isFleetSelected()) {
+	    			try {
+						model.getFleet().moveFleetFromCoordinates(moveTo);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+	    		} else if (boatSelected != null) {  			
+	    			try {
+						boatSelected.setPositionFromCoordinates(moveTo);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+	    		}
+    		}
     		break;
     	case Stop: 
     		if (model.getFleet().isFleetSelected()) {

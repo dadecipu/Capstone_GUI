@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class View extends JFrame implements ActionListener {
     Controller controller;
@@ -43,21 +44,25 @@ public class View extends JFrame implements ActionListener {
     private static final String SEND_HOME_PNG = "images/send_home.png";
     private static final String SEND_HOME_ON_CLICK_PNG = "images/send_home_on_click.png";
     
-    public static final int height = 1070;
-    public static final int width = 1039; 
+    public static final int height = 1080;
+    public static final int width = 1040; 
     
     private String selectionBoatText = "Boat 1";
     private String selectionCoordinateText = "36.137N, -94.140E";
     
     Font font;
     Rectangle rect;
+
+    JTextField jLat;
+    JTextField jLon;
+    
+    Rectangle jLatRect;
+    Rectangle jLonRect;
     
     public View(Controller c, Model m) throws IOException {
         this.controller = c;
         this.model = m;
         
-        //BufferedImage unscaledBackground = m.getGrid().getTerrainImage();
-        //this.background = scale(unscaledBackground, unscaledBackground.getWidth(), unscaledBackground.getHeight(), scalingFactor, scalingFactor);
         this.background = m.getGrid().getTerrainImage();
         
         this.buttons = new ArrayList<Button>();
@@ -65,14 +70,30 @@ public class View extends JFrame implements ActionListener {
         font = new Font("Tw Cen MT Condensed", Font.PLAIN, 28);
         rect = new Rectangle(18, 625, 200, 30);
         
+        jLat = new JTextField(10);
+        jLatRect = new Rectangle(130, 765, 70, 28);
+        jLat.setBounds(jLatRect); 
+        jLat.setBorder(null);
+        jLat.setFont(font);
+        
+        jLon = new JTextField(10);
+        jLonRect = new Rectangle(130, 808, 70, 28);
+    	jLon.setBounds(jLonRect); 
+        jLon.setBorder(null);
+        jLon.setFont(font);
+             
         this.viewPanel = new Panel();
+        this.viewPanel.setLayout(null);
         this.viewPanel.addMouseListener(controller);
-        this.getContentPane().add(this.viewPanel);
-
+        this.getContentPane().add(this.viewPanel);           
+        
         this.setSize(width, height);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
         this.setResizable(false);
+        
+        this.viewPanel.add(jLat);
+        this.viewPanel.add(jLon);
         
         try {
         	buttons.add(new Button(buttonNames.Select_Fleet, SELECT_FLEET_PNG, SELECT_FLEET_ON_CLICK_PNG, DESELECT_FLEET_PNG, DESELECT_FLEET_ON_CLICK_PNG, 16, 687));
@@ -108,25 +129,23 @@ public class View extends JFrame implements ActionListener {
     	selectionBoatText = boatId != 0 ? "Boat " + Integer.toString(boatId) : "Fleet";
     	selectionCoordinateText = boatCoords != null ? String.format("%.3fN, %.3fE", boatCoords.getLatitude(), boatCoords.getLongitude()) : "";
     }
-
-    private class Panel extends JPanel {
-        JTextField jLon = new JTextField(10);
-        JTextField jLat = new JTextField(10);
-        
-        Panel () {
-        	setLayout(new FlowLayout(FlowLayout.LEFT));
-        	
-        	jLon.setBounds(137, 1169, 195, 51);
-            jLat.setBounds(139, 1236, 195, 51);      
-            
-        	//add(jLon);
-        	//add(jLat);
-        }
-        
-        @Override
-        public Dimension getPreferredSize() {
-            return new Dimension(300, 300);
-        };
+    
+    public Coordinate getInputCoords() {
+    	String AlphaRegex = ".*[a-z].*|.*[A-Z].*";
+    	boolean latHasAlphaChars = jLat.getText().matches(AlphaRegex);
+    	boolean lonHasAlphaChars = jLon.getText().matches(AlphaRegex);  	
+    	if (latHasAlphaChars || lonHasAlphaChars) {
+    		return null;
+    	}
+    	
+    	double lat = Double.parseDouble(" 36." + jLat.getText());
+    	double lon = Double.parseDouble("-94." + jLon.getText());
+    	return new Coordinate(lat, lon);
+    }
+    
+    private class Panel extends JPanel {     
+        Panel () {   
+        }     
 
         @Override
         protected void paintComponent(Graphics g) {
@@ -136,7 +155,8 @@ public class View extends JFrame implements ActionListener {
             drawSprites(g);
             drawAlerts(g);
             drawButtons(g);
-            drawCenteredString(g);
+            drawCenteredString(g);         
+            drawInputStatics(g);
         }
 
         private void drawAlerts(Graphics g) {
@@ -169,6 +189,16 @@ public class View extends JFrame implements ActionListener {
             
             x = rect.x + (rect.width - metrics.stringWidth(selectionCoordinateText)) / 2;    
             g.drawString(selectionCoordinateText, x, y + font.getSize());
+        }
+        
+        private void drawInputStatics(Graphics g) {
+	    	g.setColor(new Color(51, 51, 51));
+	        
+			g.drawString(" 36.", jLatRect.x - 34, jLatRect.y + font.getSize() - 5);
+			g.drawString("N", jLatRect.x + 70, jLatRect.y + font.getSize() - 5);
+			
+			g.drawString("-94.", jLonRect.x - 34, jLonRect.y + font.getSize() - 5);
+			g.drawString("E", jLonRect.x + 70, jLonRect.y + font.getSize() - 5);
         }
     }
 }

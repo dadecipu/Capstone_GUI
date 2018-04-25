@@ -26,6 +26,16 @@ public class Fleet {
         }
     }
     
+    public void moveFleetFromCoordinates(Coordinate c) throws Exception {
+    	for ( Boat b : Boats ) {
+            try {
+                b.setPositionFromCoordinates(c);
+            } catch (Exception e) {
+                throw e;
+            }
+        }
+    }
+    
     public ArrayList<Boat> getBoats() {
     	return Boats;
     }

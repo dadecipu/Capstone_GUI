@@ -46,30 +46,19 @@ public class Grid {
     }
 
     // calculates the coordinate of the mouse click based on the proportions of the x, y position
-    public static Coordinate calculateCoordinate(int mouseX, int mouseY, int windowWidth, int windowHeight) {
-        double lat = TOP_LATITUDE - (((double)mouseX / (double)windowWidth) * gridWidth);
-        double lon = LEFT_LONGITUDE + (((double)mouseY / (double)windowHeight) * gridHeight);
+    public static Coordinate calculateCoordinate(int mouseX, int mouseY) {
+        double lat = TOP_LATITUDE - (((double)mouseY / (double)View.height) * gridHeight);
+        double lon = LEFT_LONGITUDE + (((double)mouseX / (double)View.width) * gridWidth);
         return new Coordinate(lat, lon);
     }
     
     public static Point calculatePoint(Coordinate coord) {
-    		Point coordPoint = new Point();
-    		
-    		System.out.println((((-coord.getLatitude()) + TOP_LATITUDE) / gridWidth) + " " + View.width);
-    		double x = (((-coord.getLatitude()) + TOP_LATITUDE) / gridWidth) / View.width;
-    		
-    		System.out.println((((coord.getLongitude()) - LEFT_LONGITUDE) / gridHeight) + " " + View.height);
-    		double y = ((coord.getLongitude() - LEFT_LONGITUDE) / gridHeight) / View.height;
-    		
-    		int pointX = (int)x;
-    		int pointY = (int)y;
-    		coordPoint.setLocation(pointX, pointY);
-    		
-    		System.out.println(pointX + " " + pointY);
-    		return coordPoint;
+		int x = (int)((coord.getLongitude() - LEFT_LONGITUDE) * (View.width / gridWidth));
+		int y = (int)(View.height - ((coord.getLatitude() - BOTTOM_LATITUDE) * (View.height / gridHeight)));
+		return new Point(x, y);		
     }
 
-    public boolean isPixelWater(int x, int y) {
+    public static boolean isPixelWater(int x, int y) {
         Color pixelColor = new Color(background.getRGB(x, y));
         if (pixelColor.getGreen() == WATER_GREEN) {
             return true;

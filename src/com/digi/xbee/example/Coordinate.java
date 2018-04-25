@@ -1,17 +1,17 @@
 package com.digi.xbee.example;
 
 public class Coordinate {
-    private double longitude;
     private double latitude;
+    private double longitude;
 
-    Coordinate(double lon, double lat) {
-        longitude = lon;
+    Coordinate(double lat, double lon) {
         latitude = lat;
+        longitude = lon;
     }
 
     public Coordinate(Coordinate c) {
-		longitude = c.longitude;
 		latitude = c.latitude;
+		longitude = c.longitude;
 	}
 
 	void setLongitude(double l) {

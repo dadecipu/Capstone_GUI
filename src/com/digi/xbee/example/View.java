@@ -44,7 +44,7 @@ public class View extends JFrame implements ActionListener {
     private static final String SEND_HOME_PNG = "images/send_home.png";
     private static final String SEND_HOME_ON_CLICK_PNG = "images/send_home_on_click.png";
     
-    public static final int height = 1080;
+    public static final int height = 1070;
     public static final int width = 1040; 
     
     private String selectionBoatText = "Boat 1";

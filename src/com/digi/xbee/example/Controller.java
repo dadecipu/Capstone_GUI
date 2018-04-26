@@ -52,7 +52,7 @@ public class Controller implements MouseListener{
     }
 
     // click boat to select
-    void setBoatSelected (Boat b) {
+    private void setBoatSelected (Boat b) {
         if (boatSelected != null) {
             boatSelected.deselect();
         }
@@ -145,6 +145,7 @@ public class Controller implements MouseListener{
     	case Select_Fleet: 		
     		if (!b.isFlipped()) {
             	view.setSelectionText(0, null);
+            	this.boatSelected = null;
     			model.getFleet().selectFleet();
     		} else {
             	view.setSelectionText(-1, null);

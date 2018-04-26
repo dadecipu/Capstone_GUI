@@ -44,8 +44,8 @@ public class View extends JFrame implements ActionListener {
     private static final String SEND_HOME_PNG = "images/send_home.png";
     private static final String SEND_HOME_ON_CLICK_PNG = "images/send_home_on_click.png";
     
-    public static final int height = 1070;
-    public static final int width = 1040; 
+    public static final int height = 967;
+    public static final int width = 930; 
     
     private String selectionBoatText = "Boat 1";
     private String selectionCoordinateText = "36.137N, -94.140E";
@@ -67,17 +67,17 @@ public class View extends JFrame implements ActionListener {
         
         this.buttons = new ArrayList<Button>();
         
-        font = new Font("Tw Cen MT Condensed", Font.PLAIN, 28);
-        rect = new Rectangle(18, 625, 200, 30);
+        font = new Font("Tw Cen MT Condensed", Font.PLAIN, 26);
+        rect = new Rectangle(15, 563, 180, 27);
         
         jLat = new JTextField(10);
-        jLatRect = new Rectangle(130, 765, 70, 28);
+        jLatRect = new Rectangle(118, 686, 60, 28);
         jLat.setBounds(jLatRect); 
         jLat.setBorder(null);
         jLat.setFont(font);
         
         jLon = new JTextField(10);
-        jLonRect = new Rectangle(130, 808, 70, 28);
+        jLonRect = new Rectangle(118, 725, 60, 28);
     	jLon.setBounds(jLonRect); 
         jLon.setBorder(null);
         jLon.setFont(font);
@@ -96,10 +96,10 @@ public class View extends JFrame implements ActionListener {
         this.viewPanel.add(jLon);
         
         try {
-        	buttons.add(new Button(buttonNames.Select_Fleet, SELECT_FLEET_PNG, SELECT_FLEET_ON_CLICK_PNG, DESELECT_FLEET_PNG, DESELECT_FLEET_ON_CLICK_PNG, 16, 687));
-        	buttons.add(new Button(buttonNames.Move, MOVE_PNG, MOVE_ON_CLICK_PNG, 16, 846));
-        	buttons.add(new Button(buttonNames.Stop, STOP_PNG, STOP_ON_CLICK_PNG, GO_PNG, GO_ON_CLICK_PNG, 16, 925));
-        	buttons.add(new Button(buttonNames.Send_Home, SEND_HOME_PNG, SEND_HOME_ON_CLICK_PNG, 16, 975));
+        	buttons.add(new Button(buttonNames.Select_Fleet, SELECT_FLEET_PNG, SELECT_FLEET_ON_CLICK_PNG, DESELECT_FLEET_PNG, DESELECT_FLEET_ON_CLICK_PNG, 14, 620));
+        	buttons.add(new Button(buttonNames.Move, MOVE_PNG, MOVE_ON_CLICK_PNG, 14, 760));
+        	buttons.add(new Button(buttonNames.Stop, STOP_PNG, STOP_ON_CLICK_PNG, GO_PNG, GO_ON_CLICK_PNG, 14, 830));
+        	buttons.add(new Button(buttonNames.Send_Home, SEND_HOME_PNG, SEND_HOME_ON_CLICK_PNG, 14, 875));
         } catch (Error E) {
         	throw E;
         }
@@ -195,10 +195,10 @@ public class View extends JFrame implements ActionListener {
 	    	g.setColor(new Color(51, 51, 51));
 	        
 			g.drawString(" 36.", jLatRect.x - 34, jLatRect.y + font.getSize() - 5);
-			g.drawString("N", jLatRect.x + 70, jLatRect.y + font.getSize() - 5);
+			g.drawString("N", jLatRect.x + 60, jLatRect.y + font.getSize() - 5);
 			
 			g.drawString("-94.", jLonRect.x - 34, jLonRect.y + font.getSize() - 5);
-			g.drawString("E", jLonRect.x + 70, jLonRect.y + font.getSize() - 5);
+			g.drawString("E", jLonRect.x + 60, jLonRect.y + font.getSize() - 5);
         }
     }
 }

@@ -96,10 +96,10 @@ public class View extends JFrame implements ActionListener {
         this.viewPanel.add(jLon);
         
         try {
-        	buttons.add(new Button(buttonNames.Select_Fleet, SELECT_FLEET_PNG, SELECT_FLEET_ON_CLICK_PNG, DESELECT_FLEET_PNG, DESELECT_FLEET_ON_CLICK_PNG, 16, 687));
-        	buttons.add(new Button(buttonNames.Move, MOVE_PNG, MOVE_ON_CLICK_PNG, 16, 846));
-        	buttons.add(new Button(buttonNames.Stop, STOP_PNG, STOP_ON_CLICK_PNG, GO_PNG, GO_ON_CLICK_PNG, 16, 925));
-        	buttons.add(new Button(buttonNames.Send_Home, SEND_HOME_PNG, SEND_HOME_ON_CLICK_PNG, 16, 975));
+        	buttons.add(new Button(buttonNames.Select_Fleet, SELECT_FLEET_PNG, SELECT_FLEET_ON_CLICK_PNG, DESELECT_FLEET_PNG, DESELECT_FLEET_ON_CLICK_PNG, 16, 687));//687
+        	buttons.add(new Button(buttonNames.Move, MOVE_PNG, MOVE_ON_CLICK_PNG, 16, 846));//846
+        	buttons.add(new Button(buttonNames.Stop, STOP_PNG, STOP_ON_CLICK_PNG, GO_PNG, GO_ON_CLICK_PNG, 16, 925));//925
+        	buttons.add(new Button(buttonNames.Send_Home, SEND_HOME_PNG, SEND_HOME_ON_CLICK_PNG, 16, 975));//975
         } catch (Error E) {
         	throw E;
         }

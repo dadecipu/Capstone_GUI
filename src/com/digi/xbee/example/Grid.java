@@ -53,8 +53,8 @@ public class Grid {
     }
     
     public static Point calculatePoint(Coordinate coord) {
-		int x = (int)((coord.getLongitude() - LEFT_LONGITUDE) * (View.width / gridWidth));
-		int y = (int)(View.height - ((coord.getLatitude() - BOTTOM_LATITUDE) * (View.height / gridHeight)));
+		int x = (int)(((coord.getLongitude() - LEFT_LONGITUDE) / gridWidth) * (double)View.width);
+		int y = (int)(View.height - ((coord.getLatitude() - BOTTOM_LATITUDE) * ((double)View.height / gridHeight)));
 		return new Point(x, y);		
     }
 

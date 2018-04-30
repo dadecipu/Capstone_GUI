@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.swing.Timer;
 
 import com.digi.xbee.api.XBeeDevice;
+import com.digi.xbee.api.exceptions.XBeeException;
 import com.digi.xbee.api.models.XBee64BitAddress;
 import com.digi.xbee.example.Button.buttonNames;
 
@@ -14,22 +15,22 @@ public class Controller implements MouseListener{
     private static Model model;
     private View view;
     private Boat boatSelected;
-    private Broadcaster broadcaster;
-    private String port = "/dev/tty.usbserial-DN01J2MD";
+    private static Broadcaster broadcaster;
+    private String port = "/dev/tty.usbserial-DN01IUNB";
     private int baudRate = 9600;
 
-    Controller() throws IOException {
+    Controller() throws IOException, XBeeException {
         model = new Model(this);
-        broadcaster = new Broadcaster(port, baudRate);
+       // broadcaster = new Broadcaster(port, baudRate);
         
         //For now we will hardcode remote devices in here
-        String address1 = "0013A20040EB823D";
+        String address1 = "0013A20041265B9B";
         model.getFleet().addBoat(1, 100, 100, model.getMapOfLake().calculateCoordinate(100, 100), address1);
         model.getFleet().addBoat(2, 200, 100, model.getMapOfLake().calculateCoordinate(100, 100), address1);
-        broadcaster.createNewRemoteDevice(address1);
+        //broadcaster.createNewRemoteDevice(address1);
     }
 
-    static void run() throws IOException {
+    static void run() throws IOException, XBeeException {
         Controller c = new Controller();
         c.view = new View(c, model);
         new Timer(20, c.view).start();
@@ -40,15 +41,24 @@ public class Controller implements MouseListener{
     }
 
     //THIS METHOD NEEDS TO BE TESTED TO BE PROPERLY IMPLEMENT
-    static void messageUpdate(XBee64BitAddress address, String dataRecieved) throws Exception {
+    static void messageUpdate(XBee64BitAddress address, String dataRecieved, XBee64BitAddress sentFromAddress) throws Exception {
 		//Parse dataRecieved to get latitude and longitude values
 	
-		double lat, lon;
-		lat = 1.2;
-		lon = 2.2;
-		Coordinate newCoord = new Coordinate(lat, lon);
+		dataRecieved = dataRecieved.substring(dataRecieved.indexOf(",") + 1, dataRecieved.length() - 2);
+		String dataLat = dataRecieved.substring(0, dataRecieved.indexOf(","));
+		String dataLong = dataRecieved.substring(dataRecieved.indexOf(",") + 1, dataRecieved.length());
+
+		int dataLatBits = Integer.parseInt(dataLat);
+		int dataLongBits = Integer.parseInt(dataLong);
+		
+		float latitude = Float.intBitsToFloat(dataLatBits);
+		float longitude = Float.intBitsToFloat(dataLongBits);
+				
+		Coordinate newCoord = new Coordinate(latitude, longitude);
 	
 		model.getFleet().messageUpdate(address, newCoord);
+		
+		broadcaster.handshake(sentFromAddress);
     }
 
     // click boat to select
@@ -131,7 +141,12 @@ public class Controller implements MouseListener{
 	        	if ((x > b.getUpperLeftPoint().x && x < b.getLowerRightPoint().x)
 	        		&& (y > b.getUpperLeftPoint().y && y < b.getLowerRightPoint().y)) {
 	        		b.click();
-	        		clickButton(b);
+	        		try {
+						clickButton(b);
+					} catch (XBeeException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 	        	}
 	        }
         }
@@ -140,7 +155,7 @@ public class Controller implements MouseListener{
     public void mouseExited(MouseEvent e) {    }
     public void mouseClicked(MouseEvent e) {    }
     
-    private void clickButton(Button b) { 	
+    private void clickButton(Button b) throws XBeeException { 	
     	switch (b.getName()) {
     	case Select_Fleet: 		
     		if (!b.isFlipped()) {
@@ -175,7 +190,8 @@ public class Controller implements MouseListener{
     		if (model.getFleet().isFleetSelected()) {
     			model.getFleet().swapAllStates();
     		} else if (boatSelected != null) {  			
-    			boatSelected.swapState();
+    			//boatSelected.swapState();
+    			broadcaster.broadcastStateSwap(boatSelected);
     		}
     		b.flip();
     		break;

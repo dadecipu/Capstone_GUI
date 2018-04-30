@@ -4,21 +4,37 @@ import com.digi.xbee.api.RemoteXBeeDevice;
 import com.digi.xbee.api.XBeeDevice;
 import com.digi.xbee.api.exceptions.XBeeException;
 import com.digi.xbee.api.models.XBee64BitAddress;
+import com.digi.xbee.api.models.XBeeMessage;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class Broadcaster {
 	XBeeDevice localXBee;
 	String port;
 	int baudRate;
 	ArrayList<RemoteXBeeDevice> remoteDevices;
-	MyDataReceiveListener localDayaRecieveListener;
+	MyDataReceiveListener localDataReceiveListener;
 	
 	
-	Broadcaster(String port, int baudRate){
+	Broadcaster(String port, int baudRate) throws XBeeException{
 		localXBee = new XBeeDevice(port, baudRate);
+		localXBee.open();
+		localDataReceiveListener = new MyDataReceiveListener();
+		localXBee.addDataListener(localDataReceiveListener);
 		this.port = port;
 		this.baudRate = baudRate;
 		remoteDevices = new ArrayList<RemoteXBeeDevice>();
+		
+		//listenForData(10000);
+		//System.out.println("Done");
+	}
+	
+	void listenForData(int time) {
+		System.out.println("Reading");
+		XBeeMessage message = localXBee.readData(time);
+		if(!message.equals(null))
+			System.out.println("Recieved: " + new String(message.getData()));
 	}
 	
 	void createNewRemoteDevice(String address) {
@@ -39,7 +55,7 @@ public class Broadcaster {
 		
 		System.out.println("Broadcasting coordinates: Lat: " +  coord.getLatitude() + " Long: " + coord.getLongitude() + " to remote address: " + target.getAddress().toString());
 		
-		message = "$g, " + intBitsLatitude + ", " + intBitsLongitude + "\r\n";
+		message = "$G," + intBitsLatitude + "," + intBitsLongitude + "\r\n";
 		this.localXBee.sendDataAsync(remoteDevices.get(targetIndex), message.getBytes());
 	}
 	
@@ -48,13 +64,18 @@ public class Broadcaster {
 		
 		String message = null;
 		if(target.getStoppedState()) {
-			message = "$r\r\n";
+			message = "$R\r\n";
 			target.swapState();
 		}else {
-			message = "$s\r\n";
+			message = "$S\r\n";
 			target.swapState();
 		}
 		this.localXBee.sendDataAsync(remoteDevices.get(targetIndex), message.getBytes());
+	}
+	
+	void handshake(XBee64BitAddress target) throws XBeeException {
+		int index = getTargetIndex(target);
+		this.localXBee.sendDataAsync(remoteDevices.get(index), "$H\r\n".getBytes());
 	}
 
 	int getTargetIndex(XBee64BitAddress target) {

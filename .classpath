@@ -6,11 +6,12 @@
 	<classpathentry kind="lib" path="libs/android-sdk-addon-3.jar"/>
 	<classpathentry kind="lib" path="libs/rxtx-2.2.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Capstone_GUI_Eclipe/libs/native/Windows/win32"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Capstone_GUI_Eclipse/libs/native/Mac_OS_X"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="libs/slf4j-api-1.7.12.jar"/>
 	<classpathentry kind="lib" path="libs/slf4j-nop-1.7.12.jar"/>
 	<classpathentry kind="lib" path="libs/xbee-java-library-1.2.1.jar"/>
+	<classpathentry kind="lib" path="/Users/keifer/Downloads/XBJL-1.2.1/extra-libs/native"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
